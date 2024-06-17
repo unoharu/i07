@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<h1>顧客追加</h1>
+
+
+
+<div class="hoge">
+    <h2>受付人数を入力してください</h2>
+    <form id="myform" method="post">
+        {% csrf_token %}
+        <div class="spinner-container">
+            <span class="spinner-sub disabled">-</span>
+            {% for field in form %}
+                {{ field }}
+            {% endfor %}
+            <span class="spinner-add">+</span>
+        </div>
+        <div class="hoge_button">
+            <button type="submit" form="myform" class="btn2">送信</button>
+        </div>
+    </form>
+</div>
+{% endblock  %}
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static "js/script.js" %}"></script>
+{% endblock  %}

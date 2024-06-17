@@ -1,0 +1,137 @@
+/* 受付開始画面ボタン */
+.hoge_button {
+    text-align: center;
+}
+
+.hoge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+}
+
+
+.btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    border-radius: 5px;
+    background-color: rgb(90, 182, 212);
+    padding: 20px;
+    text-decoration: none;
+    color: white;
+    font-size: 40px;
+}
+
+  
+.btn2 {
+    border-radius: 5px;
+    background-color: rgb(90, 182, 212);
+    padding: 10px;
+}
+
+
+a {
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+}
+
+
+h1 {
+    text-align: center;
+    font-size: 100px;
+}
+
+
+h2 {
+    text-align: center;
+}
+
+
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    /* ボタンを押した時に文章を範囲選択しない */
+    user-select: none; 
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    padding: 30px;
+}
+
+.spinner {
+    width: 70px;
+    padding: 0;
+    text-align: center;
+    border: none;
+    background: none;
+    outline: none;
+    pointer-events: none;
+    font-size: 2rem;
+}
+  
+.spinner::-webkit-inner-spin-button,
+.spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+  
+.spinner-sub,
+.spinner-add {
+    display: block;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 60px;
+}
+
+
+.guidance {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);   
+}
+
+
+/* jQueryで付与または外すと最小値と最大値の時にボタンを押せない */
+.disabled {
+    opacity: 0.3;
+    color: red;
+    cursor: inherit;
+}
+
+/* layout */
+.item {
+    background: #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid #ccc;
+}
+
+.item_test { 
+    background: #df9292;
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid #ccc;
+
+}
+
+.container {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 180px 60px 60px 60px ;
+}
+
+.box-big {
+    grid-column: 2 / 5;
+    grid-row: 3 / 6;
+  }
+  
