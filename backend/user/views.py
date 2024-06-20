@@ -17,45 +17,43 @@ def add_customers(request):
     if request.method == "POST":
         form = CustomerGroupForm(request.POST)
         if form.is_valid():
-            group_id = Customer.get_next_group_id()  # 自動インクリメントされたgroup_idを取得
             date = timezone.now().date()
             check_in_time = timezone.now().time()
-            number_of_customers = form.cleaned_data['number_of_customers']
+            people = form.cleaned_data['people']
 
-            # statusが'o'のテーブルをID順に取得
-            available_tables = Table.objects.filter(status='o').order_by('id')
+            # statusが'o'のテーブルをmax_seats昇順で取得
+            available_tables = Table.objects.filter(status='o').order_by('max_seats')
             if not available_tables.exists():
                 messages.error(request, '利用可能なテーブルがありません。')
                 return redirect('user:add_customers')
 
-            total_seats = 0
+            remaining_customers = people
             selected_tables = []
+            
             for table in available_tables:
-                selected_tables.append(table)
-                total_seats += table.max_seats
-                if total_seats >= number_of_customers:
+                if remaining_customers <= 0:
                     break
+                selected_tables.append(table)
+                remaining_customers -= table.max_seats
 
-            if total_seats < number_of_customers:
+            if remaining_customers > 0:
                 messages.error(request, '十分な席数がありません。')
                 return redirect('user:add_customers')
 
-            remaining_customers = number_of_customers
-            for table in selected_tables:
-                seats_to_fill = min(remaining_customers, table.max_seats)
-                for _ in range(seats_to_fill):
-                    Customer.objects.create(
-                        group_id=group_id,
-                        date=date,
-                        check_in_time=check_in_time,
-                        table_id=table
-                    )
-                remaining_customers -= seats_to_fill
-                table.status = 'x'
-                table.save()
+            # 最初のテーブルにCustomerレコードを作成
+            customer = Customer.objects.create(
+                people=people,
+                date=date,
+                check_in_time=check_in_time,
+                table_id=selected_tables[0]  # 最初のテーブルを割り当てて保存
+            )
+
+            # 他のテーブルを割り当ててステータスを更新
+            selected_tables[len(selected_tables) - 1].status = 'x'
+            table.save()
 
             messages.success(request, '顧客が正常に追加されました。')
-            return redirect(reverse('user:success_url', kwargs={'group_id': group_id}))
+            return redirect(reverse('user:success_url', kwargs={'group_id': customer.id}))
     else:
         form = CustomerGroupForm()
     
