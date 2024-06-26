@@ -16,8 +16,9 @@ def id_reset():
             f'UPDATE `table` SET id = "{i+1}"  WHERE id = "{i+6}";'
         )
 
-
-cur.execute('SELECT * FROM `table`')
+for i in range(2):
+    cur.execute(f'INSERT INTO `table`(max_seats, status, id) VALUES (1, "o", {i+11});')
+    conn.commit()
 rows = cur.fetchall()
 for row in rows:
     print(row)

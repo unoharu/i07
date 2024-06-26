@@ -1,19 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
-{% block contentt %}
-
-<div class="container">
+{% block content %}
+{% comment %} <div class="container">
     <div class="item">4人席A</div>
     <div class="item">4人席B</div>
     <div class="item">4人席C</div>
-    <div class="item_test">4人席D</div>
+    <div class="item">4人席D</div>
     <div class="item">2人席A</div>
     <div class="item">2人席B</div>
     <div class="item">2人席C</div>
     <div class="item">2人席D</div>
-    <div class="item">1人席A</div>
+    <div class="item fill">1人席A</div>
     <div class="item box-big">VIP席</div>
     <div class="item">1人席B</div>
     <div class="item">1人席C</div>
+</div> {% endcomment %}
+<div class="container">
+        {% for table in tables %}
+            <div class="item {% if table.status == 'o' %}fill{% endif %} {% if table.id == 10 %}box-big{% endif %} ">
+                {{ table.max_seats }}人席
+            </div>
+        {% endfor %}
 </div>
 {% endblock  %}

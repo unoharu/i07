@@ -115,12 +115,11 @@ h2 {
     border: 3px solid #ccc;
 }
 
-.item_test { 
+.fill { 
     background: #df9292;
     padding: 10px;
     border-radius: 8px;
     border: 3px solid #ccc;
-
 }
 
 .container {
