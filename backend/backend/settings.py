@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'index',
     'user',
     'table',
+    'bill',
 ]
 
 MIDDLEWARE = [

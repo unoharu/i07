@@ -5,3 +5,12 @@
     <h1>{{ group_id }}</h1>
 </div>
 {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    // 5秒後にリダイレクト
+    setTimeout(function(){
+        window.location.href = "{% url 'user:reception' %}";
+    }, 5000);
+</script>
+{% endblock %}

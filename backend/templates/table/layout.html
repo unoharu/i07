@@ -17,7 +17,7 @@
 </div> {% endcomment %}
 <div class="container">
         {% for table in tables %}
-            <div class="item {% if table.status == 'o' %}fill{% endif %} {% if table.id == 10 %}box-big{% endif %} ">
+            <div class="item {% if table.status == 'x' %}fill{% endif %} {% if table.id == 10 %}box-big{% endif %} ">
                 {{ table.max_seats }}人席
             </div>
         {% endfor %}
