@@ -15,11 +15,104 @@
     <div class="item">1人席B</div>
     <div class="item">1人席C</div>
 </div> {% endcomment %}
-<div class="container">
-        {% for table in tables %}
-            <div class="item {% if table.status == 'x' %}fill{% endif %} {% if table.id == 10 %}box-big{% endif %} ">
-                {{ table.max_seats }}人席
-            </div>
-        {% endfor %}
+<div class="layout-wrap">
+    <div class="layout-container">
+        <div class="container">
+                {% for table in tables %}
+                    <div class="item {% if table.status == 'x' %}fill{% endif %} {% if table.id == 10 %}box-big{% endif %}" data-table-id="{{ table.id }}">
+                        テーブル{{ table.id }}({{ table.max_seats }}人席)
+                    </div>
+                {% endfor %}
+
+        </div>
+        <div class="predict-container">
+            <h3>予測退店時間</h3>
+            {% for user in users %}
+            <p class="table_id">テーブル{{ user.table_id }}</p>
+            <p>{{ user.stay_time }}</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock  %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select all paragraph elements with class 'table_id'
+        var paragraphs = document.querySelectorAll(".table_id");
+
+        // Loop through each paragraph and remove the 'テーブル' string
+        paragraphs.forEach(function(paragraph) {
+            var text = paragraph.textContent;
+            var newText = text.replace("Table", "");
+            paragraph.textContent = newText;
+        });
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.item').on('click', function(){
+            var tableId = $(this).data('table-id');
+            console.log("Sending tableId:", tableId);
+    
+            // テーブルの状態を更新
+            $.ajax({
+                url: '{% url "table:update_status" %}',
+                type: 'POST',
+                data: {
+                    'table_id': tableId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response){
+                    console.log("Update status response:", response);
+                    if(response.success){
+                        // fillクラスを削除
+                        $('.item[data-table-id="' + tableId + '"]').removeClass('fill');
+    
+                        // 予測退店時間を非表示にする
+                        $('.predict-container .table_id').each(function(){
+                            var $this = $(this);
+                            console.log("Checking element:", $this.text(), "against tableId:", tableId);
+                            if ($this.text().includes('テーブル' + ' ' + tableId)) {
+                                console.log("Hiding element with tableId:", tableId);
+                                $this.next().hide();  // stay_timeを非表示
+                                $this.hide();  // table_idを非表示
+                            }
+                        });
+    
+                        alert('Status updated and fill class removed. Prediction time hidden.');
+                    } else {
+                        alert('Error updating status: ' + JSON.stringify(response.errors));
+                    }
+                },
+                error: function(xhr, errmsg, err){
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    // CSRFトークン設定
+    $(document).ajaxSend(function(event, xhr, settings) {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+</script>
+{% endblock %}

@@ -1,25 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
-<h1>顧客追加</h1>
 
-
-
-<div class="hoge">
-    <h2>受付人数を入力してください</h2>
-    <form id="myform" method="post">
-        {% csrf_token %}
-        <div class="spinner-container">
-            <span class="spinner-sub disabled">-</span>
-            {% for field in form %}
-                {{ field }}
-            {% endfor %}
-            <span class="spinner-add">+</span>
-        </div>
-        <div class="hoge_button">
-            <button type="submit" form="myform" class="btn2">送信</button>
-        </div>
-    </form>
+<div class="customer-wrap">
+    <div class="hoge">
+        <h2>人数を入力してください</h2>
+        <form id="myform" method="post">
+            {% csrf_token %}
+            <div class="spinner-container">
+                <span class="spinner-sub disabled">-</span>
+                {% for field in form %}
+                    {{ field }}
+                {% endfor %}
+                <span class="spinner-add">+</span>
+            </div>
+            <div class="hoge_button">
+                <button type="submit" form="myform" class="btn2">確定</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock  %}
 {% block js %}

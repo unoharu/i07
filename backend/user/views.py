@@ -7,9 +7,24 @@ from .forms import CustomerGroupForm
 from .models import Customer
 from table.models import Table
 from django.db import transaction
+import joblib
+import numpy as np
+from datetime import datetime, timedelta
 
 class ReceptionView(TemplateView):
     template_name = 'user/reception.html'
+
+
+# 保存したモデルとスケーラーの読み込み
+model = joblib.load('./models/izakaya_stay_time_predictor.pkl')
+scaler = joblib.load('./models/scaler.pkl')
+
+# 新しいデータでの予測関数
+def predict_stay_time(checkIn_hours, member, week, month, day):
+    data = np.array([[checkIn_hours, member, week, month, day]])
+    data_scaled = scaler.transform(data)
+    predicted_time = model.predict(data_scaled)
+    return predicted_time[0]
 
 
 def add_customers(request):
@@ -27,7 +42,7 @@ def add_customers(request):
 
             remaining_customers = people
             selected_tables = []
-            
+
             def get_table_for_customers(num):
                 table = available_tables.filter(max_seats=num).first()
                 if table:
@@ -48,7 +63,7 @@ def add_customers(request):
                 9: [10],
                 10: [10]
             }
-            
+
             while remaining_customers > 0:
                 table_size_options = table_map.get(remaining_customers, [])
                 if not table_size_options:
@@ -79,11 +94,19 @@ def add_customers(request):
 
             try:
                 with transaction.atomic():
+                    check_in_hours = check_in_time.hour
+                    week = date.weekday()  # 0: Monday, ..., 6: Sunday
+                    month = date.month
+                    day = date.day
+
+                    predicted_stay_time = predict_stay_time(check_in_hours, people, week, month, day)
+
                     for table in selected_tables:
                         Customer.objects.create(
                             people=min(table.max_seats, people),
                             date=date,
-                            check_in_time=check_in_time,
+                            check_out_time=None,
+                            stay_time=timedelta(minutes=predicted_stay_time)+datetime.now(),  # 予測された滞在時間を追加
                             table_id=table
                         )
 

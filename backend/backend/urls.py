@@ -9,7 +9,6 @@ urlpatterns = [
     path('accounts/', include("accounts.urls")),
     path('table/', include("table.urls")),
     path('user/', include("user.urls")),
-    path('bill/', include("bill.urls")),
     path('', include("index.urls")),
 ]
 

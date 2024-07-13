@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 class Customer(models.Model):
     id = models.AutoField(primary_key=True)
     people = models.IntegerField(null=True, blank=True, verbose_name=_("people"))
-    age = models.IntegerField(null=True, blank=True, verbose_name=_("age"))
     date = models.DateField(null=True, blank=True, verbose_name=_("date"))
     check_in_time = models.TimeField(null=True, blank=True, auto_now_add=True, verbose_name=_("check_in_time"))
-    check_out_time = models.TimeField(null=True, blank=True, auto_now=True, verbose_name=_("check_out_time"))
+    check_out_time = models.TimeField(null=True, blank=True, verbose_name=_("check_out_time"))
+    stay_time = models.TimeField(null=True, blank=True, verbose_name=_("stay_time"))
     
     table_id = models.ForeignKey(Table, verbose_name=_("table_id"), on_delete=models.CASCADE)
 
